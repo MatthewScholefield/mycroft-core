@@ -22,6 +22,7 @@ import audioop
 from time import sleep
 
 import pyaudio
+import pyee
 from speech_recognition import (
     Microphone,
     AudioSource,
@@ -29,7 +30,15 @@ from speech_recognition import (
     AudioData
 )
 import speech_recognition
+
+from mycroft.client.speech.local_recognizer import LocalRecognizer
+from mycroft.metrics import MetricsAggregator
 from mycroft.util.log import getLogger
+
+
+from mycroft.messagebus.message import Message
+from mycroft.session import SessionManager
+
 logger = getLogger(__name__)
 __author__ = 'seanfitz'
 
@@ -117,9 +126,14 @@ class MutableMicrophone(Microphone):
 
 
 class Recognizer(speech_recognition.Recognizer):
-    def __init__(self):
+    def __init__(self, emitter):
         speech_recognition.Recognizer.__init__(self)
         self.max_audio_length_sec = 30
+
+        # TODO: Removed awful hackish stuff
+        self.mycroft_recognizer = LocalRecognizer(16000, 'en-us')
+        self.metrics = MetricsAggregator()
+        self.emitter = emitter
 
     def listen(self, source, timeout=None):
         """
@@ -137,6 +151,7 @@ class Recognizer(speech_recognition.Recognizer):
         ``speech_recognition.WaitTimeoutError`` exception. If ``timeout`` is
         ``None``, it will wait indefinitely.
         """
+        logger.debug("BEGIN!!!!!!!!!!!!!!!!!!!!")
         assert isinstance(source, AudioSource), \
             "Source must be an audio source"
         assert self.pause_threshold >= self.non_speaking_duration >= 0
@@ -150,6 +165,8 @@ class Recognizer(speech_recognition.Recognizer):
         # speaking audio a phrase
         phrase_buffer_count = int(math.ceil(self.phrase_threshold /
                                             seconds_per_buffer))
+        # self.pause_threshold = 0.4
+
         # maximum number of buffers of non-speaking audio to retain before and
         # after
         non_speaking_buffer_count = int(math.ceil(self.non_speaking_duration /
@@ -158,10 +175,14 @@ class Recognizer(speech_recognition.Recognizer):
         # read audio input for phrases until there is a phrase that is long
         # enough
         elapsed_time = 0  # number of seconds of audio read
+        said_wakeword = False
+        NUM_AV_ENERGY = 2
+        av_val = 0
         while True:
             frames = collections.deque()
 
             # store audio input until the phrase starts
+            num_averaged = 0
             while True:
                 elapsed_time += seconds_per_buffer
                 # handle timeout if specified
@@ -179,16 +200,24 @@ class Recognizer(speech_recognition.Recognizer):
                 # detect whether speaking has started on audio input
                 # energy of the audio signal
                 energy = audioop.rms(buffer, source.SAMPLE_WIDTH)
-                if energy > self.energy_threshold:
-                    break
+                av_val = (num_averaged * av_val + energy) / NUM_AV_ENERGY
+                num_averaged += 1
+                logger.debug("Waiting to trigger...")
+                if num_averaged >= NUM_AV_ENERGY:
+                    if av_val > self.energy_threshold:
+                        logger.debug("OVER threshold thus TRIGGERED")
+                        break
+                    num_averaged = 0
 
                 # dynamically adjust the energy threshold using assymmetric
                 # weighted average
                 # do not adjust dynamic energy level for this sample if it is
                 # muted audio (energy == 0)
                 self.adjust_energy_threshold(energy, seconds_per_buffer)
+
             # read audio input until the phrase ends
             pause_count, phrase_count = 0, 0
+            should_return = True  # TODO: Remove this sin
             while True:
                 elapsed_time += seconds_per_buffer
 
@@ -196,6 +225,30 @@ class Recognizer(speech_recognition.Recognizer):
                 if len(buffer) == 0:
                     break  # reached end of the stream
                 frames.append(buffer)
+
+                if not said_wakeword:  # TODO: Remove awfulness
+                    frame_data = b"".join(list(frames))
+                    logger.debug("HeRe!")
+                    hyp = self.mycroft_recognizer.transcribe(frame_data,
+                                                     self.metrics)
+
+                    def speakz(utterance):
+                        logger.debug("blah")
+                        payload = {
+                            'utterance': utterance,
+                            'session': SessionManager.get().session_id
+                        }
+                        self.emitter.emit("speak", Message("speak", metadata=payload))
+
+                    if self.mycroft_recognizer.contains(hyp):
+                        logger.debug("AHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH!!")
+                        said_wakeword = True
+                        should_return = False
+                        speakz("Go ahead")
+                        break
+                else:
+                    logger.debug("Said wakeword...")
+
                 phrase_count += 1
 
                 # check if speaking has stopped for longer than the pause
@@ -205,6 +258,7 @@ class Recognizer(speech_recognition.Recognizer):
                 if energy > self.energy_threshold:
                     pause_count = 0
                 else:
+                    logger.debug("Under threshold")
                     pause_count += 1
                 if pause_count > pause_buffer_count:  # end of the phrase
                     break
@@ -222,7 +276,8 @@ class Recognizer(speech_recognition.Recognizer):
             # check how long the detected phrase is, and retry listening if
             # the phrase is too short
             phrase_count -= pause_count
-            if phrase_count >= phrase_buffer_count:
+            logger.debug("GOT here!")
+            if said_wakeword and should_return and phrase_count >= phrase_buffer_count:  # TODO: Fix hax
                 break  # phrase is long enough, stop listening
 
         # obtain frame data

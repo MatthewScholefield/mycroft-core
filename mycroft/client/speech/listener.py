@@ -112,6 +112,8 @@ class AudioConsumer(threading.Thread):
         self.queue.task_done()
         timer.start()
 
+        self.state.skip_wakeword = True  # TODO: Remove horrid hackish stuff
+
         if self.state.sleeping:
             self.process_wake_up(audio)
         elif self.state.skip_wakeword:
@@ -253,7 +255,7 @@ class RecognizerLoop(pyee.EventEmitter):
         self.mycroft_recognizer = LocalRecognizer(sample_rate, lang)
         # TODO - localization
         self.wakeup_recognizer = LocalRecognizer(sample_rate, lang, "wake up")
-        self.remote_recognizer = Recognizer()
+        self.remote_recognizer = Recognizer(self)
         self.state = RecognizerLoopState()
 
     def start_async(self):
