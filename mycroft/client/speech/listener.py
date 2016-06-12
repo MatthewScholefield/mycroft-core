@@ -28,7 +28,7 @@ from mycroft.client.speech.mic import MutableMicrophone, Recognizer
 from mycroft.client.speech.recognizer_wrapper import \
     RemoteRecognizerWrapperFactory
 from mycroft.client.speech.word_extractor import WordExtractor
-from mycroft.configuration.config import ConfigurationManager
+from mycroft.configuration import ConfigurationManager
 from mycroft.messagebus.message import Message
 from mycroft.metrics import MetricsAggregator, Stopwatch
 from mycroft.session import SessionManager
@@ -37,8 +37,8 @@ from mycroft.util.log import getLogger
 
 logger = getLogger(__name__)
 
-core_config = ConfigurationManager.get_config().get('core')
-speech_config = ConfigurationManager.get_config().get('speech_client')
+core_config = ConfigurationManager.get().get('core')
+speech_config = ConfigurationManager.get().get('speech_client')
 
 
 class AudioProducer(threading.Thread):
@@ -197,7 +197,7 @@ class AudioConsumer(threading.Thread):
                 logger.error("AccessDenied from Cerberus proxy.")
                 self.__speak(
                         "Your device is not registered yet. To start pairing, "
-                        "login at cerberus.mycroft.ai")
+                        "login at cerberus dot mycroft dot A.I")
                 utterances.append("pair my device")
             except Exception as e:
                 logger.error("Unexpected exception: {0}".format(e))
