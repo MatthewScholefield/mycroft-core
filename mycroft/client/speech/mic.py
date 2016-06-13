@@ -151,7 +151,6 @@ class Recognizer(speech_recognition.Recognizer):
         ``speech_recognition.WaitTimeoutError`` exception. If ``timeout`` is
         ``None``, it will wait indefinitely.
         """
-        logger.debug("BEGIN!!!!!!!!!!!!!!!!!!!!")
         assert isinstance(source, AudioSource), \
             "Source must be an audio source"
         assert self.pause_threshold >= self.non_speaking_duration >= 0
@@ -165,7 +164,7 @@ class Recognizer(speech_recognition.Recognizer):
         # speaking audio a phrase
         phrase_buffer_count = int(math.ceil(self.phrase_threshold /
                                             seconds_per_buffer))
-        # self.pause_threshold = 0.4
+        # self.pause_threshold = 0.4  # Override default of 0.8 seconds
 
         # maximum number of buffers of non-speaking audio to retain before and
         # after
@@ -202,10 +201,8 @@ class Recognizer(speech_recognition.Recognizer):
                 energy = audioop.rms(buffer, source.SAMPLE_WIDTH)
                 av_val = (num_averaged * av_val + energy) / NUM_AV_ENERGY
                 num_averaged += 1
-                logger.debug("Waiting to trigger...")
                 if num_averaged >= NUM_AV_ENERGY:
                     if av_val > self.energy_threshold:
-                        logger.debug("OVER threshold thus TRIGGERED")
                         break
                     num_averaged = 0
 
@@ -228,12 +225,10 @@ class Recognizer(speech_recognition.Recognizer):
 
                 if not said_wakeword:  # TODO: Remove awfulness
                     frame_data = b"".join(list(frames))
-                    logger.debug("HeRe!")
                     hyp = self.mycroft_recognizer.transcribe(frame_data,
                                                      self.metrics)
 
                     def speakz(utterance):
-                        logger.debug("blah")
                         payload = {
                             'utterance': utterance,
                             'session': SessionManager.get().session_id
@@ -241,13 +236,10 @@ class Recognizer(speech_recognition.Recognizer):
                         self.emitter.emit("speak", Message("speak", metadata=payload))
 
                     if self.mycroft_recognizer.contains(hyp):
-                        logger.debug("AHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH!!")
                         said_wakeword = True
                         should_return = False
                         speakz("Go ahead")
                         break
-                else:
-                    logger.debug("Said wakeword...")
 
                 phrase_count += 1
 
@@ -258,7 +250,6 @@ class Recognizer(speech_recognition.Recognizer):
                 if energy > self.energy_threshold:
                     pause_count = 0
                 else:
-                    logger.debug("Under threshold")
                     pause_count += 1
                 if pause_count > pause_buffer_count:  # end of the phrase
                     break
@@ -276,7 +267,6 @@ class Recognizer(speech_recognition.Recognizer):
             # check how long the detected phrase is, and retry listening if
             # the phrase is too short
             phrase_count -= pause_count
-            logger.debug("GOT here!")
             if said_wakeword and should_return and phrase_count >= phrase_buffer_count:  # TODO: Fix hax
                 break  # phrase is long enough, stop listening
 
