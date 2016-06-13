@@ -164,7 +164,6 @@ class Recognizer(speech_recognition.Recognizer):
         # speaking audio a phrase
         phrase_buffer_count = int(math.ceil(self.phrase_threshold /
                                             seconds_per_buffer))
-        # self.pause_threshold = 0.4  # Override default of 0.8 seconds
 
         # maximum number of buffers of non-speaking audio to retain before and
         # after
@@ -175,8 +174,6 @@ class Recognizer(speech_recognition.Recognizer):
         # enough
         elapsed_time = 0  # number of seconds of audio read
         said_wakeword = False
-        NUM_AV_ENERGY = 2
-        av_val = 0
         while True:
             frames = collections.deque()
 
@@ -196,20 +193,14 @@ class Recognizer(speech_recognition.Recognizer):
                 if len(frames) > non_speaking_buffer_count:
                     frames.popleft()
 
-                # detect whether speaking has started on audio input
-                # energy of the audio signal
+                # detect whether speaking has started
+                # on audio input energy of the audio signal
                 energy = audioop.rms(buffer, source.SAMPLE_WIDTH)
-                av_val = (num_averaged * av_val + energy) / NUM_AV_ENERGY
-                num_averaged += 1
-                if num_averaged >= NUM_AV_ENERGY:
-                    if av_val > self.energy_threshold:
-                        break
-                    num_averaged = 0
+                if energy > self.energy_threshold:
+                    break
 
-                # dynamically adjust the energy threshold using assymmetric
-                # weighted average
-                # do not adjust dynamic energy level for this sample if it is
-                # muted audio (energy == 0)
+                # dynamically adjust the energy threshold
+                # using asymmetric weighted average
                 self.adjust_energy_threshold(energy, seconds_per_buffer)
 
             # read audio input until the phrase ends
