@@ -205,6 +205,7 @@ class Recognizer(speech_recognition.Recognizer):
 
             # read audio input until the phrase ends
             pause_count, phrase_count = 0, 0
+            counter = 0
             should_return = True  # TODO: Remove this sin
             while True:
                 elapsed_time += seconds_per_buffer
@@ -214,7 +215,9 @@ class Recognizer(speech_recognition.Recognizer):
                     break  # reached end of the stream
                 frames.append(buffer)
 
-                if not said_wakeword:  # TODO: Remove awfulness
+                counter += 1
+                if counter > 10 and not said_wakeword:  # TODO: Remove awfulness
+                    counter = 0
                     frame_data = b"".join(list(frames))
                     hyp = self.mycroft_recognizer.transcribe(frame_data,
                                                      self.metrics)
