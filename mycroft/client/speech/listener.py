@@ -62,8 +62,7 @@ class AudioProducer(threading.Thread):
             self.recognizer.adjust_for_ambient_noise(source)
             while self.state.running:
                 try:
-                    self.emitter.emit("recognizer_loop:listening")
-                    audio = self.recognizer.listen(source)
+                    audio = self.recognizer.listen(source, self.emitter)
                     self.queue.put(audio)
                 except IOError, ex:
                     # NOTE: Audio stack on raspi is slightly different, throws

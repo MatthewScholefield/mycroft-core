@@ -168,12 +168,14 @@ class Enclosure:
         self.__register_mouth_events()
 
     def __register_mouth_events(self):
-        self.client.on('recognizer_loop:listening', self.mouth.listen)
+        self.client.on('recognizer_loop:record_begin', self.mouth.listen)
+        self.client.on('recognizer_loop:record_end', self.mouth.reset)
         self.client.on('recognizer_loop:audio_output_start', self.mouth.talk)
         self.client.on('recognizer_loop:audio_output_end', self.mouth.reset)
 
     def __remove_mouth_events(self):
-        self.client.remove('recognizer_loop:listening', self.mouth.listen)
+        self.client.remove('recognizer_loop:record_begin', self.mouth.listen)
+        self.client.remove('recognizer_loop:record_end', self.mouth.reset)
         self.client.remove('recognizer_loop:audio_output_start',
                            self.mouth.talk)
         self.client.remove('recognizer_loop:audio_output_end',

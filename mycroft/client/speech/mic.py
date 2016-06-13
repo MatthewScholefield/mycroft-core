@@ -135,7 +135,7 @@ class Recognizer(speech_recognition.Recognizer):
         self.metrics = MetricsAggregator()
         self.emitter = emitter
 
-    def listen(self, source, timeout=None):
+    def listen(self, source, emitter, timeout=None):
         """
         Records a single phrase from ``source`` (an ``AudioSource`` instance)
         into an ``AudioData`` instance, which it returns.
@@ -230,6 +230,7 @@ class Recognizer(speech_recognition.Recognizer):
                         said_wakeword = True
                         should_return = False
                         speakz("Go ahead")
+                        emitter.emit('recognizer_loop:record_begin')
                         break
 
                 phrase_count += 1
@@ -265,6 +266,8 @@ class Recognizer(speech_recognition.Recognizer):
         for i in range(pause_count - non_speaking_buffer_count):
             frames.pop()  # remove extra non-speaking frames at the end
         frame_data = b"".join(list(frames))
+
+        emitter.emit('recognizer_loop:record_end')
 
         return AudioData(frame_data, source.SAMPLE_RATE, source.SAMPLE_WIDTH)
 
