@@ -18,9 +18,12 @@
 
 import collections
 import audioop
+import wave
 from time import sleep
 
+import os
 import pyaudio
+import subprocess
 from speech_recognition import (
     Microphone,
     AudioSource,
@@ -119,7 +122,7 @@ class MutableMicrophone(Microphone):
 class ResponsiveRecognizer(speech_recognition.Recognizer):
     # The maximum audio in seconds to keep for transcribing a phrase
     # The wake word must fit in this time
-    SAVED_WW_SEC = 1.0
+    SAVED_WW_SEC = 2.0
 
     # Padding of silence when feeding to pocketsphinx
     SILENCE_SEC = 0.01
@@ -153,6 +156,26 @@ class ResponsiveRecognizer(speech_recognition.Recognizer):
     def wake_word_in_audio(self, frame_data):
         hyp = self.wake_word_recognizer.transcribe(frame_data)
         return self.wake_word_recognizer.found_wake_word(hyp)
+
+    @staticmethod
+    def find_next_file_num():
+        num = 1
+        while os.path.exists('mycroft-'+str(num)+'.wav'):
+            num += 1
+        return num
+
+    @staticmethod
+    def save_byte_data(byte_data, source):
+        num = ResponsiveRecognizer.find_next_file_num()
+        name = 'mycroft-'+str(num)+'.wav'
+        wf = wave.open(name, 'wb')
+        wf.setframerate(source.SAMPLE_RATE)
+        wf.setsampwidth(source.SAMPLE_WIDTH)
+        wf.setnchannels(1)
+        wf.writeframes(byte_data)
+        wf.close()
+        subprocess.call(['git', 'add', '*.wav'])
+        subprocess.call(['git', 'commit', '-m'])
 
     def record_phrase(self, source, sec_per_buffer):
         """
@@ -244,9 +267,12 @@ class ResponsiveRecognizer(speech_recognition.Recognizer):
                 byte_data = byte_data[len(chunk):] + chunk
 
             buffers_since_check += 1.0
-            if buffers_since_check < buffers_per_check:
+            enough_energy = energy > 0.5 * self.energy_threshold
+            if buffers_since_check < buffers_per_check and enough_energy:
                 buffers_since_check -= buffers_per_check
                 said_wake_word = self.wake_word_in_audio(byte_data + silence)
+
+        return byte_data
 
     @staticmethod
     def create_audio_data(raw_data, source):
@@ -264,22 +290,19 @@ class ResponsiveRecognizer(speech_recognition.Recognizer):
         :param emitter: a pyee EventEmitter for sending when the wakeword
                         has been found
         """
-        assert isinstance(source, AudioSource), "Source must be an AudioSource"
+        sec_per_buf = float(source.CHUNK) / (source.SAMPLE_RATE * source.SAMPLE_WIDTH)
+        while True:
+            before = self.wait_until_wake_word(source, sec_per_buf)
 
-        bytes_per_sec = source.SAMPLE_RATE * source.SAMPLE_WIDTH
-        sec_per_buffer = float(source.CHUNK) / bytes_per_sec
+            logger.debug("Recording...")
+            emitter.emit("recognizer_loop:record_begin")
+            after = self.record_phrase(source, sec_per_buf)
+            emitter.emit("recognizer_loop:record_end")
+            logger.debug("Waiting...")
 
-        logger.debug("Waiting for wake word...")
-        self.wait_until_wake_word(source, sec_per_buffer)
+            self.save_byte_data(before+after, source)
 
-        logger.debug("Recording...")
-        emitter.emit("recognizer_loop:record_begin")
-        frame_data = self.record_phrase(source, sec_per_buffer)
-        audio_data = self.create_audio_data(frame_data, source)
-        emitter.emit("recognizer_loop:record_end")
-        logger.debug("Thinking...")
-
-        return audio_data
+        return '\0'
 
     def adjust_threshold(self, energy, seconds_per_buffer):
         if self.dynamic_energy_threshold and energy > 0:
