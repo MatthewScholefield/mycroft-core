@@ -174,8 +174,6 @@ class ResponsiveRecognizer(speech_recognition.Recognizer):
         wf.setnchannels(1)
         wf.writeframes(byte_data)
         wf.close()
-        subprocess.call(['git', 'add', '*.wav'])
-        subprocess.call(['git', 'commit', '-m'])
 
     def record_phrase(self, source, sec_per_buffer):
         """
