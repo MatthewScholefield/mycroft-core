@@ -122,7 +122,7 @@ class MutableMicrophone(Microphone):
 class ResponsiveRecognizer(speech_recognition.Recognizer):
     # The maximum audio in seconds to keep for transcribing a phrase
     # The wake word must fit in this time
-    SAVED_WW_SEC = 2.0
+    SAVED_WW_SEC = 1.0
 
     # Padding of silence when feeding to pocketsphinx
     SILENCE_SEC = 0.01
@@ -206,28 +206,19 @@ class ResponsiveRecognizer(speech_recognition.Recognizer):
 
         # Maximum number of chunks to record before timing out
         max_chunks = int(self.RECORDING_TIMEOUT / sec_per_buffer)
+        min_chunks = int(1.0 / sec_per_buffer)
         num_chunks = 0
 
         # bytearray to store audio in
         byte_data = '\0' * source.SAMPLE_WIDTH
 
         phrase_complete = False
-        while num_chunks < max_chunks and not phrase_complete:
+        energy = 0.0
+        while (energy < 8.0 * self.energy_threshold and num_chunks < max_chunks) or num_chunks < min_chunks:
             chunk = self.record_sound_chunk(source)
+            energy = self.calc_energy(chunk, source.SAMPLE_WIDTH)
             byte_data += chunk
             num_chunks += 1
-
-            energy = self.calc_energy(chunk, source.SAMPLE_WIDTH)
-            is_loud = energy > self.energy_threshold
-            if is_loud:
-                noise = increase_noise(noise)
-                num_loud_chunks += 1
-            else:
-                noise = decrease_noise(noise)
-                self.adjust_threshold(energy, sec_per_buffer)
-
-            if noise <= min_noise and num_loud_chunks > min_loud_chunks:
-                phrase_complete = True
 
         return byte_data
 
@@ -265,10 +256,9 @@ class ResponsiveRecognizer(speech_recognition.Recognizer):
                 byte_data = byte_data[len(chunk):] + chunk
 
             buffers_since_check += 1.0
-            enough_energy = energy > 0.5 * self.energy_threshold
-            if buffers_since_check < buffers_per_check and enough_energy:
-                buffers_since_check -= buffers_per_check
-                said_wake_word = self.wake_word_in_audio(byte_data + silence)
+            enough_energy = energy > 8.0 * self.energy_threshold
+            if enough_energy:
+                said_wake_word = True
 
         return byte_data
 
@@ -296,7 +286,9 @@ class ResponsiveRecognizer(speech_recognition.Recognizer):
             emitter.emit("recognizer_loop:record_begin")
             after = self.record_phrase(source, sec_per_buf)
             emitter.emit("recognizer_loop:record_end")
-            logger.debug("Waiting...")
+            logger.debug("Pausing...")
+            sleep(0.5)
+            logger.debug("Listening...")
 
             self.save_byte_data(before+after, source)
 
