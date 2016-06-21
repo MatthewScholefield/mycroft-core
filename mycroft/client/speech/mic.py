@@ -287,7 +287,8 @@ class ResponsiveRecognizer(speech_recognition.Recognizer):
             after = self.record_phrase(source, sec_per_buf)
             emitter.emit("recognizer_loop:record_end")
             logger.debug("Pausing...")
-            sleep(0.5)
+            for i in range(1,20):
+                self.adjust_threshold(self.calc_energy(self.record_sound_chunk(source), source.SAMPLE_WIDTH), sec_per_buf)
             logger.debug("Listening...")
 
             self.save_byte_data(before+after, source)
