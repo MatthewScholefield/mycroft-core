@@ -141,6 +141,8 @@ class ResponsiveRecognizer(speech_recognition.Recognizer):
 
         self.wake_word_recognizer = wake_word_recognizer
         self.audio = pyaudio.PyAudio()
+        self.has_registered_callback = False
+        self.conv_mode = False
 
     @staticmethod
     def record_sound_chunk(source):
@@ -256,6 +258,13 @@ class ResponsiveRecognizer(speech_recognition.Recognizer):
         """
         return AudioData(raw_data, source.SAMPLE_RATE, source.SAMPLE_WIDTH)
 
+    def enable_conv_mode(self):
+        logger.debug("ENABLEDDD")
+        self.conv_mode = True
+
+    def disable_conv_mode(self):
+        self.conv_mode = False
+
     def listen(self, source, emitter):
         """
         Listens for audio that Mycroft should respond to
@@ -266,11 +275,17 @@ class ResponsiveRecognizer(speech_recognition.Recognizer):
         """
         assert isinstance(source, AudioSource), "Source must be an AudioSource"
 
+        if not self.has_registered_callback:
+            self.has_registered_callback = True
+            emitter.on('ConversationSkill:ModeEnabled', self.enable_conv_mode)
+            emitter.on('ConversationSkill:ModeDisabled', self.disable_conv_mode)
+
         bytes_per_sec = source.SAMPLE_RATE * source.SAMPLE_WIDTH
         sec_per_buffer = float(source.CHUNK) / bytes_per_sec
 
-        logger.debug("Waiting for wake word...")
-        self.wait_until_wake_word(source, sec_per_buffer)
+        if not self.conv_mode:
+            logger.debug("Waiting for wake word...")
+            self.wait_until_wake_word(source, sec_per_buffer)
 
         logger.debug("Recording...")
         emitter.emit("recognizer_loop:record_begin")

@@ -21,6 +21,7 @@ import time
 
 import abc
 import os.path
+import pyee
 import re
 from adapt.intent import Intent
 from os.path import join, dirname, splitext, isdir
@@ -129,6 +130,7 @@ def load_skills(emitter, skills_root=SKILLS_BASEDIR):
                 skill['name'] not in BLACKLISTED_SKILLS):
             load_skill(skill, emitter)
 
+ee = pyee.EventEmitter()
 
 class MycroftSkill(object):
     """
@@ -178,6 +180,10 @@ class MycroftSkill(object):
         """
         raise Exception("Initialize not implemented for skill: " + self.name)
 
+    def on_complete(self):
+        logger.debug("AMAZING")
+        self.emitter.emit(Message('skill:complete'))
+
     def register_intent(self, intent_parser, handler):
         intent_message = create_intent_envelope(intent_parser)
         intent_message.message_type = "register_intent"
@@ -185,8 +191,11 @@ class MycroftSkill(object):
         self.registered_intents.append(intent_parser.name)
 
         def receive_handler(message):
+            logger.debug("Hello")
             try:
+                self.emitter.once('recognizer_loop:audio_output_end', self.on_complete)
                 handler(message)
+                logger.debug('Here')
             except:
                 # TODO: Localize
                 self.speak(

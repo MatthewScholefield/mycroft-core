@@ -25,6 +25,7 @@ import wolframalpha
 from six.moves import urllib
 
 from mycroft.identity import IdentityManager
+from mycroft.messagebus.message import Message
 from mycroft.skills.core import MycroftSkill
 from mycroft.util import CerberusAccessDenied
 from mycroft.util.log import getLogger
@@ -179,6 +180,11 @@ class WolframAlphaSkill(MycroftSkill):
             self.speak(response)
         else:
             self.speak("Sorry, I don't understand your request.")
+
+        self.emitter.once('recognizer_loop:audio_output_end', self.on_complete)
+
+    def on_complete(self):
+        self.emitter.emit(Message('skill:complete'))
 
     @staticmethod
     def __find_value(pods, pod_id):

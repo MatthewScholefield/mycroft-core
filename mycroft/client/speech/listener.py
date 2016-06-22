@@ -92,6 +92,16 @@ class AudioConsumer(threading.Thread):
         self.mycroft_recognizer = mycroft_recognizer
         self.remote_recognizer = remote_recognizer
         self.metrics = MetricsAggregator()
+        self.conv_mode = False
+
+        emitter.on('ConversationSkill:ModeEnabled', self.enable_conv_mode)
+        emitter.on('ConversationSkill:ModeDisabled', self.disable_conv_mode)
+
+    def enable_conv_mode(self):
+        self.conv_mode = True
+
+    def disable_conv_mode(self):
+        self.conv_mode = False
 
     def run(self):
         while self.state.running:
