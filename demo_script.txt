@@ -1,0 +1,4 @@
+My croft is a smart and open source artificial intelligence
+Normally, I'm good at responding to voice. However, it is too loud in here to hear you
+I can do anything from telling you the weather to spelling out a word you don't know
+Here is a demonstration of how I can be talked to: Hey my croft. What's the weather? It is currently sunny with a high of 85 and a low of 72.

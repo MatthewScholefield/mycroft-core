@@ -15,13 +15,14 @@
 # You should have received a copy of the GNU General Public License
 # along with Mycroft Core.  If not, see <http://www.gnu.org/licenses/>.
 
-
+import os
 import threading
 import time
 from Queue import Queue
 
 import pyee
 import speech_recognition as sr
+from os.path import dirname
 
 from mycroft.client.speech.local_recognizer import LocalRecognizer
 from mycroft.client.speech.mic import MutableMicrophone, ResponsiveRecognizer
@@ -61,8 +62,9 @@ class AudioProducer(threading.Thread):
             self.recognizer.adjust_for_ambient_noise(source)
             while self.state.running:
                 try:
-                    audio = self.recognizer.listen(source, self.emitter)
-                    self.queue.put(audio)
+                    1
+                    # audio = self.recognizer.listen(source, self.emitter)
+                    # self.queue.put(audio)
                 except IOError, ex:
                     # NOTE: Audio stack on raspi is slightly different, throws
                     # IOError every other listen, almost like it can't handle
@@ -92,10 +94,24 @@ class AudioConsumer(threading.Thread):
         self.mycroft_recognizer = mycroft_recognizer
         self.remote_recognizer = remote_recognizer
         self.metrics = MetricsAggregator()
+        self.demo_line = -1
 
     def run(self):
         while self.state.running:
-            self.read_audio()
+            self.run_demo()
+            # self.read_audio()
+
+    def run_demo(self):
+        time.sleep(6)
+        directory = dirname(dirname(dirname(dirname(__file__))))
+        file_name = os.path.join(directory, "demo_script.txt")
+        with open(file_name) as f:
+            content = f.readlines()
+        self.demo_line += 1
+        if self.demo_line >= len(content):
+            self.demo_line = 0
+        self.__speak(content[self.demo_line])
+        self.emitter.once('recognizer_loop:audio_output_end', self.run_demo)
 
     @staticmethod
     def _audio_length(audio):
