@@ -24,6 +24,7 @@ import pyee
 import speech_recognition as sr
 from os.path import dirname
 
+from mycroft.client.enclosure import arduino, eyes
 from mycroft.client.speech.local_recognizer import LocalRecognizer
 from mycroft.client.speech.mic import MutableMicrophone, ResponsiveRecognizer
 from mycroft.client.speech.recognizer_wrapper import \
@@ -102,7 +103,7 @@ class AudioConsumer(threading.Thread):
             # self.read_audio()
 
     def run_demo(self):
-        time.sleep(6)
+        time.sleep(8)
         directory = dirname(dirname(dirname(dirname(__file__))))
         file_name = os.path.join(directory, "demo_script.txt")
         with open(file_name) as f:
