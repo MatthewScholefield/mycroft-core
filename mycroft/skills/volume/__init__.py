@@ -33,8 +33,8 @@ LOGGER = getLogger(__name__)
 
 
 class VolumeSkill(MycroftSkill):
-    VOLUMES = {0: 0, 1: 15, 2: 25, 3: 35, 4: 45, 5: 55, 6: 65, 7: 70, 8: 80,
-               9: 90, 10: 95, 11: 100}
+    VOLUMES = {0: 0, 1: 20, 2: 25, 3: 31, 4: 36, 5: 42, 6: 47, 7: 52, 8: 58,
+               9: 64, 10: 70, 11: 76}
 
     def __init__(self):
         super(VolumeSkill, self).__init__(name="VolumeSkill")
@@ -114,11 +114,11 @@ class VolumeSkill(MycroftSkill):
             return self.default_volume
 
         if amount in ['loud']:
-            amount = 9
+            amount = 11
         elif amount in ['normal']:
-            amount = 6
+            amount = 9
         elif amount in ['quiet']:
-            amount = 3
+            amount = 4
         elif amount in ['two']:
             amount = 2
         elif amount in ['one']:
