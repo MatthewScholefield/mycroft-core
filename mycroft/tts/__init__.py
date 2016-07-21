@@ -39,6 +39,7 @@ class TTS(object):
         self.lang = lang
         self.voice = voice
         self.filename = filename
+        self.sends_begin = False
 
     @abc.abstractmethod
     def execute(self, sentence, client):

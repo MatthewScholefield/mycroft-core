@@ -46,6 +46,7 @@ class Mimic(TTS):
             if output == '' and process.poll() is not None:
                 break
             if output:
+                client.emit(Message("recognizer_loop:audio_output_start"))
                 phonemes = output.strip().split(' ')
                 phonemes = [(e.split(':')[0], e.split(':')[1])
                             for e in phonemes]

@@ -57,7 +57,6 @@ def handle_utterance(event):
 
 def mute_and_speak(utterance):
     mutex.acquire()
-    client.emit(Message("recognizer_loop:audio_output_start"))
     try:
         logger.info("Speak: " + utterance)
         loop.mute()

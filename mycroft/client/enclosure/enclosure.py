@@ -83,6 +83,10 @@ class EnclosureReader(Thread):
         if "volume.down" in data:
             self.client.emit(Message("DecreaseVolumeIntent"))
 
+        if "speak=" in data:
+            data = data.replace("speak=", "")
+            self.client.emit(Message("speak", metadata={'utterance': data}))
+
     def stop(self):
         self.alive = False
         self.join()
