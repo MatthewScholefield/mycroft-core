@@ -18,9 +18,10 @@
 
 import sys
 from Queue import Queue
-from threading import Thread
+from threading import Thread, _after_fork
 
 import serial
+from os.path import join, dirname
 
 from mycroft.client.enclosure.arduino import EnclosureArduino
 from mycroft.client.enclosure.eyes import EnclosureEyes
@@ -29,7 +30,7 @@ from mycroft.client.enclosure.weather import EnclosureWeather
 from mycroft.configuration import ConfigurationManager
 from mycroft.messagebus.client.ws import WebsocketClient
 from mycroft.messagebus.message import Message
-from mycroft.util import kill
+from mycroft.util import kill, play_wav
 from mycroft.util.log import getLogger
 
 __author__ = 'aatchison + jdorleans + iward'
@@ -82,6 +83,12 @@ class EnclosureReader(Thread):
 
         if "volume.down" in data:
             self.client.emit(Message("DecreaseVolumeIntent"))
+
+        if "beep" in data:
+            if "low" in data:
+                play_wav(join(dirname(__file__), "beep_low.wav"))
+            else:
+                play_wav(join(dirname(__file__), "beep.wav"))
 
         if "speak=" in data:
             data = data.replace("speak=", "")
