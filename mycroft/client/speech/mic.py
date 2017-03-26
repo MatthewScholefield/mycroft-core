@@ -141,7 +141,7 @@ class ResponsiveRecognizer(speech_recognition.Recognizer):
     RECORDING_TIMEOUT_WITH_SILENCE = 3.0
 
     # Time between pocketsphinx checks for the wake word
-    SEC_BETWEEN_WW_CHECKS = 0.2
+    SEC_BETWEEN_WW_CHECKS = 0.6
 
     def __init__(self, wake_word_recognizer):
         speech_recognition.Recognizer.__init__(self)
