@@ -276,16 +276,13 @@ class ResponsiveRecognizer(speech_recognition.Recognizer):
             else:
                 counter += 1
 
-            # At first, the buffer is empty and must fill up.  After that
-            # just drop the first chunk bytes to keep it the same size.
-            needs_to_grow = len(byte_data) < max_size
-            if needs_to_grow:
-                byte_data += chunk
-            else:  # Remove beginning of audio and add new chunk to end
-                byte_data = byte_data[len(chunk):] + chunk
+            byte_data += chunk
 
             buffers_since_check += 1.0
             if buffers_since_check < buffers_per_check:
+                to_shrink = len(byte_data) - max_size
+                if to_shrink > 0:
+                    byte_data = byte_data[to_shrink:]
                 buffers_since_check -= buffers_per_check
                 said_wake_word = self.wake_word_in_audio(byte_data + silence)
 
