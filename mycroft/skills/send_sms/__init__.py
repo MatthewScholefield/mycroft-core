@@ -42,17 +42,16 @@ class SendSMSSkill(MycroftSkill):
                          'sean': '34567890'}  # TODO - Use API
 
     def initialize(self):
-        intent = IntentBuilder("SendSMSIntent").require(
-            "SendSMSKeyword").require("Contact").require("Message").build()
-        self.register_intent(intent, self.handle_intent)
+        # TODO: Generate capture from contacts
+        self.register_intent('sms.send.intent', self.handle_intent)
 
     def handle_intent(self, message):
         try:
-            contact = message.data.get("Contact").lower()
+            contact = message.data.get("contact").lower()
 
             if contact in self.contacts:
                 number = self.contacts.get(contact)
-                msg = message.data.get("Message")
+                msg = message.data.get("message")
                 self.__send_sms(number, msg)
                 self.__notify(contact, number, msg)
 

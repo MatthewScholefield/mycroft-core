@@ -1,9 +1,7 @@
 {
   "utterance": "list two alarms",
-  "intent_type": "AlarmSkillListIntent",
+  "intent_type": "alarm.list.intent",
   "intent": {
-    "AlarmSkillListVerb": "list",
-    "AlarmSkillAmount": "2",
-    "AlarmSkillKeyword": "alarms"
+    "amount": "2"
   }
 }

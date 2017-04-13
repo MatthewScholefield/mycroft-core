@@ -1,7 +1,7 @@
 {
   "utterance": "what is the weather going to be like in the next couple of hours",
-  "intent_type": "NextHoursWeatherIntent",
+  "intent_type": "weather.intent",
   "intent": {
-    "WeatherKeyword": "weather"
+    "time": "next couple of hours"
   }
 }

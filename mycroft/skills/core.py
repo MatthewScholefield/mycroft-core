@@ -236,11 +236,9 @@ class MycroftSkill(object):
         """
         raise Exception("Initialize not implemented for skill: " + self.name)
 
-    def register_intent(self, intent_parser, handler):
-        self.emitter.emit(Message("register_intent", intent_parser.__dict__))
-        self.registered_intents.append(intent_parser.name)
+    def register_intent(self, intent_name, handler):
 
-        def receive_handler(message):
+        def handler_wrapper(message):
             try:
                 handler(message)
             except:
@@ -252,16 +250,7 @@ class MycroftSkill(object):
                     "An error occurred while processing a request in " +
                     self.name, exc_info=True)
 
-        self.emitter.on(intent_parser.name, receive_handler)
-
-    def register_vocabulary(self, entity, entity_type):
-        self.emitter.emit(Message('register_vocab', {
-            'start': entity, 'end': entity_type
-        }))
-
-    def register_regex(self, regex_str):
-        re.compile(regex_str)  # validate regex
-        self.emitter.emit(Message('register_vocab', {'regex': regex_str}))
+        self.emitter.on(intent_name, handler_wrapper)
 
     def speak(self, utterance, expect_response=False):
         data = {'utterance': utterance,

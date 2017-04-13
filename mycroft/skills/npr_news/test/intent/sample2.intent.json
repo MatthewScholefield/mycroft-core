@@ -1,7 +1,5 @@
 {
   "utterance": "is there any news",
-  "intent_type": "NPRNewsIntent",
-  "intent": {
-    "NPRNewsKeyword": "news"
-  }
+  "intent_type": "npr.play.intent",
+  "intent": { }
 }

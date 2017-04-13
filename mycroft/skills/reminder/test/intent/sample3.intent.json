@@ -1,7 +1,8 @@
 {
   "utterance": "remind me to wake up tomorrow morning",
-  "intent_type": "ReminderSkillCreateIntent",
+  "intent_type": "reminder.create.intent",
   "intent": {
-    "ReminderSkillCreateVerb": "remind me"
+    "time": "tomorrow morning",
+    "label": "wake up"
   }
 }

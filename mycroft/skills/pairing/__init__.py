@@ -55,9 +55,7 @@ class PairingSkill(MycroftSkill):
                           '0': 'Zero'}
 
     def initialize(self):
-        intent = IntentBuilder("PairingIntent") \
-            .require("PairingKeyword").require("DeviceKeyword").build()
-        self.register_intent(intent, self.handle_pairing)
+        self.register_intent('pair.intent', self.handle_pairing)
         self.emitter.on("mycroft.not.paired", self.not_paired)
 
     def not_paired(self, message):

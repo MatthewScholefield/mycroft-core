@@ -1,9 +1,7 @@
 {
   "utterance": "cancel one alarm",
-  "intent_type": "AlarmSkillDeleteIntent",
+  "intent_type": "alarm.delete.intent",
   "intent": {
-    "AlarmSkillDeleteVerb": "cancel",
-    "AlarmSkillAmount": "1",
-    "AlarmSkillKeyword": "alarm"
+    "amount": "1"
   }
 }

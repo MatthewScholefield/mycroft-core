@@ -1,9 +1,8 @@
 {
   "utterance": "find puppies on wikipedia",
-  "intent_type": "SearchWebsiteIntent",
+  "intent_type": "website.search.intent",
   "intent": {
-    "SearchKeyword": "find",
-    "Website": "wikipedia",
-    "SearchTerms": "puppies"
+    "website": "wikipedia",
+    "query": "puppies"
   }
 }

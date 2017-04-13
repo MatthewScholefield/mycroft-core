@@ -1,7 +1,5 @@
 {
   "utterance": "stop",
-  "intent_type": "StopIntent",
-  "intent": {
-    "StopKeyword": "stop"
-  }
+  "intent_type": "stop.intent",
+  "intent": { }
 }

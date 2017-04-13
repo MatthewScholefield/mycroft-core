@@ -1,8 +1,7 @@
 {
   "utterance": "call mark",
-  "intent_type": "DialCallIntent",
+  "intent_type": "call.dial.intent",
   "intent": {
-    "DialCallKeyword": "call",
-    "Contact": "mark"
+    "contact": "mark"
   }
 }

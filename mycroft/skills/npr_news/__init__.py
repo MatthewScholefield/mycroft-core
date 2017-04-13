@@ -40,9 +40,7 @@ class NPRNewsSkill(MycroftSkill):
         self.process = None
 
     def initialize(self):
-        intent = IntentBuilder("NPRNewsIntent").require(
-            "NPRNewsKeyword").build()
-        self.register_intent(intent, self.handle_intent)
+        self.register_intent('npr.play.intent', self.handle_intent)
 
         self.weather.bind(self.emitter)
         self.weather.load_data_files(dirname(weather.__file__))

@@ -1,7 +1,5 @@
 {
   "utterance": "ip address",
-  "intent_type": "IPIntent",
-  "intent": {
-    "IPCommand": "IP Address"
-  }
+  "intent_type": "ip.intent",
+  "intent": { }
 }

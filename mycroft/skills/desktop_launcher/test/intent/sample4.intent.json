@@ -1,8 +1,7 @@
 {
   "utterance": "open tumblr",
-  "intent_type": "LaunchWebsiteIntent",
+  "intent_type": "website.launch.intent",
   "intent": {
-    "LaunchKeyword": "open",
-    "Website": "tumblr"
+    "website": "tumblr"
   }
 }

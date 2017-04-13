@@ -47,25 +47,10 @@ class AudioRecordSkill(ScheduledSkill):
         self.record_process = None
 
     def initialize(self):
-        intent = IntentBuilder("AudioRecordSkillIntent").require(
-            "AudioRecordSkillKeyword").build()
-        self.register_intent(intent, self.handle_record)
-
-        intent = IntentBuilder('AudioRecordSkillStopIntent').require(
-            'AudioRecordSkillStopVerb') \
-            .require('AudioRecordSkillKeyword').build()
-        self.register_intent(intent, self.handle_stop)
-
-        intent = IntentBuilder('AudioRecordSkillPlayIntent').require(
-            'AudioRecordSkillPlayVerb') \
-            .require('AudioRecordSkillKeyword').build()
-        self.register_intent(intent, self.handle_play)
-
-        intent = IntentBuilder('AudioRecordSkillStopPlayIntent').require(
-            'AudioRecordSkillStopVerb') \
-            .require('AudioRecordSkillPlayVerb').require(
-            'AudioRecordSkillKeyword').build()
-        self.register_intent(intent, self.handle_stop_play)
+        self.register_intent('recorder.record.start.intent', self.handle_record)
+        self.register_intent('recorder.record.stop.intent', self.handle_stop)
+        self.register_intent('recorder.playback.start.intent', self.handle_play)
+        self.register_intent('recorder.playback.stop.intent', self.handle_stop_play)
 
     def handle_record(self, message):
         utterance = message.data.get('utterance')

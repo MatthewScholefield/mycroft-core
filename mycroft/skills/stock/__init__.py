@@ -34,13 +34,11 @@ class StockSkill(MycroftSkill):
         super(StockSkill, self).__init__(name="StockSkill")
 
     def initialize(self):
-        stock_price_intent = IntentBuilder("StockPriceIntent") \
-            .require("StockPriceKeyword").require("Company").build()
-        self.register_intent(stock_price_intent,
+        self.register_intent('stock.price.intent',
                              self.handle_stock_price_intent)
 
     def handle_stock_price_intent(self, message):
-        company = message.data.get("Company")
+        company = message.data.get("company")
         try:
             response = self.find_and_query(company)
             self.emitter.once("recognizer_loop:audio_output_start",

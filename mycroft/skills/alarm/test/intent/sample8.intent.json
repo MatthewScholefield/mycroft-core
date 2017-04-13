@@ -1,9 +1,7 @@
 {
   "utterance": "erase the next alarm",
-  "intent_type": "AlarmSkillDeleteIntent",
+  "intent_type": "alarm.delete.intent",
   "intent": {
-    "AlarmSkillDeleteVerb": "erase",
-    "AlarmSkillAmount": "the next",
-    "AlarmSkillKeyword": "alarm"
+    "amount": "next"
   }
 }

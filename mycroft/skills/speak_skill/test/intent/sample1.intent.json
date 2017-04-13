@@ -1,8 +1,7 @@
 {
   "utterance": "Speak Hello Jason",
-  "intent_type": "SpeakIntent",
+  "intent_type": "speak.intent",
   "intent": {
-    "SpeakKeyword": "speak",
-   "Words": "hello jason"
+    "words": "hello jason"
   }
 }

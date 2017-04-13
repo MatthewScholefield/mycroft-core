@@ -56,25 +56,11 @@ class VolumeSkill(MycroftSkill):
         self.__build_set_volume()
 
     def __build_set_volume(self):
-        intent = IntentBuilder("SetVolumeIntent").require(
-            "VolumeKeyword").require("VolumeAmount").build()
-        self.register_intent(intent, self.handle_set_volume)
-
-        intent = IntentBuilder("IncreaseVolumeIntent").require(
-            "IncreaseVolumeKeyword").build()
-        self.register_intent(intent, self.handle_increase_volume)
-
-        intent = IntentBuilder("DecreaseVolumeIntent").require(
-            "DecreaseVolumeKeyword").build()
-        self.register_intent(intent, self.handle_decrease_volume)
-
-        intent = IntentBuilder("MuteVolumeIntent").require(
-            "MuteVolumeKeyword").build()
-        self.register_intent(intent, self.handle_mute_volume)
-
-        intent = IntentBuilder("ResetVolumeIntent").require(
-            "ResetVolumeKeyword").build()
-        self.register_intent(intent, self.handle_reset_volume)
+        self.register_intent('volume.set.intent', self.handle_set_volume)
+        self.register_intent('volume.increase.intent', self.handle_increase_volume)
+        self.register_intent('volume.decrease.intent', self.handle_decrease_volume)
+        self.register_intent('volume.mute.intent', self.handle_mute_volume)
+        self.register_intent('volume.reset.intent', self.handle_reset_volume)
 
     def handle_set_volume(self, message):
         mixer = Mixer()
@@ -156,7 +142,7 @@ class VolumeSkill(MycroftSkill):
         return new_level, new_level != old_level
 
     def get_volume_level(self, message, default=None):
-        level_str = message.data.get('VolumeAmount', default)
+        level_str = message.data.get('level', default)
         level = self.default_level
 
         try:

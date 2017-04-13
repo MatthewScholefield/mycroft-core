@@ -104,27 +104,21 @@ class WeatherSkill(MycroftSkill):
         else:
             self.owm = OWMApi()
 
+    def handle_intent(self, message):
+        t = message.data.get('time')
+        if t is None:
+            return
+        t_type = t['type']
+
+        if t_type == 'now':
+            self.handle_current_intent(message)
+        elif t_type == 'future':
+            self.handle_next_day_intent(message)
+        elif t_type == 'later':
+            self.handle_next_hour_intent(message)
+
     def initialize(self):
-        self.__build_current_intent()
-        self.__build_next_hour_intent()
-        self.__build_next_day_intent()
-
-    def __build_current_intent(self):
-        intent = IntentBuilder("CurrentWeatherIntent").require(
-            "WeatherKeyword").optionally("Location").build()
-        self.register_intent(intent, self.handle_current_intent)
-
-    def __build_next_hour_intent(self):
-        intent = IntentBuilder("NextHoursWeatherIntent").require(
-            "WeatherKeyword").optionally("Location") \
-            .require("NextHours").build()
-        self.register_intent(intent, self.handle_next_hour_intent)
-
-    def __build_next_day_intent(self):
-        intent = IntentBuilder("NextDayWeatherIntent").require(
-            "WeatherKeyword").optionally("Location") \
-            .require("NextDay").build()
-        self.register_intent(intent, self.handle_next_day_intent)
+        self.register_intent('weather.intent', self.handle_intent)
 
     def handle_current_intent(self, message):
         try:
@@ -207,7 +201,7 @@ class WeatherSkill(MycroftSkill):
 
     def get_location(self, message):
         try:
-            location = message.data.get("Location", None)
+            location = message.data.get("location", None)
             if location:
                 return location, location
 

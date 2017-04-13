@@ -1,7 +1,5 @@
 {
   "utterance": "give me a joke",
-  "intent_type": "JokingIntent",
-  "intent": {
-    "JokingKeyword": "joke"
-  }
+  "intent_type": "joke.intent",
+  "intent": { }
 }

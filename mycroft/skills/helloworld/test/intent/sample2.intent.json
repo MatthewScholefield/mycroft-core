@@ -1,7 +1,5 @@
 {
   "utterance": "Thanks",
-  "intent_type": "ThankYouIntent",
-  "intent": {
-    "ThankYouKeyword": "thanks"
-  }
+  "intent_type": "helloworld.thank.intent",
+  "intent": { }
 }

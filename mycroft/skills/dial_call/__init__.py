@@ -45,16 +45,20 @@ class DialCallSkill(MycroftSkill):
             'sean': '34567890'}  # TODO - Use API
 
     def initialize(self):
-        intent = IntentBuilder("DialCallIntent").require(
-            "DialCallKeyword").require("Contact").build()
-        self.register_intent(intent, self.handle_intent)
+        # TODO: Generate capture from contacts
+        self.register_intent('call.intent', self.handle_intent)
 
     def handle_intent(self, message):
         try:
-            contact = message.data.get("Contact").lower()
+            number = message.data.get('number')
+            if number is None:
+                contact = message.data.get("contact")
+                if contact is not None:
+                    contact = contact.lower()
+                    if contact in self.contacts:
+                        number = self.contacts.get(contact)
 
-            if contact in self.contacts:
-                number = self.contacts.get(contact)
+            if number is not None:
                 self.__call(number)
                 self.__notify(contact, number)
 

@@ -45,10 +45,7 @@ class ReminderSkill(ScheduledCRUDSkill):
 
     def initialize(self):
         super(ReminderSkill, self).initialize()
-        intent = IntentBuilder(
-            'ReminderSkillStopIntent').require('ReminderSkillStopVerb') \
-            .require('ReminderSkillKeyword').build()
-        self.register_intent(intent, self.__handle_stop)
+        self.register_intent('reminder.stop.intent', self.__handle_stop)
 
     def load_data(self):
         try:

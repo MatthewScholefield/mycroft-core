@@ -1,7 +1,7 @@
 {
-  "utterance": "alarm in 2 months",
-  "intent_type": "AlarmSkillCreateIntent",
+  "utterance": "create an alarm in 2 months",
+  "intent_type": "alarm.create.intent",
   "intent": {
-    "AlarmSkillCreateVerb": "alarm"
+    "interval": "2 months"
   }
 }

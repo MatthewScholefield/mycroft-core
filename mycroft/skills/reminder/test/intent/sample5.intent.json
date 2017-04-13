@@ -1,9 +1,7 @@
 {
   "utterance": "list two reminders",
-  "intent_type": "ReminderSkillListIntent",
+  "intent_type": "reminder.list.intent",
   "intent": {
-    "ReminderSkillListVerb": "list",
-    "ReminderSkillAmount": "2",
-    "ReminderSkillKeyword": "reminders"
+    "amount": "two"
   }
 }

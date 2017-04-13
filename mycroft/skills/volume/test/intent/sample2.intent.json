@@ -1,8 +1,7 @@
 {
   "utterance": "update volume to 11",
-  "intent_type": "SetVolumeIntent",
+  "intent_type": "volume.set.intent",
   "intent": {
-    "VolumeKeyword": "volume",
-    "VolumeAmount": "11"
+    "level": "11"
   }
 }

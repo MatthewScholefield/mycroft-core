@@ -1,7 +1,8 @@
 {
   "utterance": "notify me next friday to have dinner with my family",
-  "intent_type": "ReminderSkillCreateIntent",
+  "intent_type": "reminder.create.intent",
   "intent": {
-    "ReminderSkillCreateVerb": "notify me"
+    "time": "next friday",
+    "label": "have dinner with my family"
   }
 }

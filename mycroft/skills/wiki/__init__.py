@@ -46,13 +46,11 @@ class WikipediaSkill(MycroftSkill):
                  'FeedbackSearch.dialog'))
 
     def initialize(self):
-        intent = IntentBuilder("WikipediaIntent").require(
-            "WikipediaKeyword").require("ArticleTitle").build()
-        self.register_intent(intent, self.handle_intent)
+        self.register_intent('wiki.intent', self.handle_intent)
 
     def handle_intent(self, message):
         try:
-            title = message.data.get("ArticleTitle")
+            title = message.data.get('query')
             self.__feedback_search(title)
             results = wiki.search(title, self.max_results)
             summary = re.sub(

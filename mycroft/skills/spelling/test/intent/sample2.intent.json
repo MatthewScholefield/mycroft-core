@@ -1,8 +1,7 @@
 {
   "utterance": "how do you spell the word intelligence",
-  "intent_type": "SpellingIntent",
+  "intent_type": "spell.intent",
   "intent": {
-    "SpellingKeyword": "spell the word",
-    "Word": "intelligence"
+    "word": "intelligence"
   }
 }

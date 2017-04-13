@@ -1,7 +1,8 @@
 {
   "utterance": "remind me to be awesome in 2 days",
-  "intent_type": "ReminderSkillCreateIntent",
+  "intent_type": "reminder.create.intent",
   "intent": {
-    "ReminderSkillCreateVerb": "remind me"
+    "label": "be awesome",
+    "interval": "2 days"
   }
 }

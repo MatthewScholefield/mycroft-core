@@ -35,6 +35,7 @@ class IntentSkill(MycroftSkill):
         self.reload_skill = False
 
     def initialize(self):
+        return
         self.emitter.on('register_vocab', self.handle_register_vocab)
         self.emitter.on('register_intent', self.handle_register_intent)
         self.emitter.on('recognizer_loop:utterance', self.handle_utterance)

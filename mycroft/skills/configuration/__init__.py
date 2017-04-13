@@ -34,11 +34,7 @@ class ConfigurationSkill(ScheduledSkill):
         self.api = DeviceApi()
 
     def initialize(self):
-        intent = IntentBuilder("UpdateConfigurationIntent") \
-            .require("ConfigurationSkillKeyword") \
-            .require("ConfigurationSkillUpdateVerb") \
-            .build()
-        self.register_intent(intent, self.handle_update_intent)
+        self.register_intent('configuration.update.intent', self.handle_update_intent)
         self.schedule()
 
     def handle_update_intent(self, message):

@@ -39,10 +39,10 @@ class IPSkill(MycroftSkill):
         super(IPSkill, self).__init__(name="IPSkill")
 
     def initialize(self):
-        intent = IntentBuilder("IPIntent").require("IPCommand").build()
-        self.register_intent(intent, self.handle_intent)
+        self.register_intent('ip.ask.intent', self.handle_intent)
 
     def handle_intent(self, message):
+        # TODO: Localize
         self.speak("Here are my available I.P. addresses.")
         self.enclosure.deactivate_mouth_events()
         for ifaceName in interfaces():
@@ -64,6 +64,7 @@ class IPSkill(MycroftSkill):
                     time.sleep((self.LETTERS_PER_SCREEN + len(address)) *
                                self.SEC_PER_LETTER)
         self.enclosure.activate_mouth_events()
+        # TODO: Localize
         self.speak("Those are all my I.P. addresses.")
 
     def stop(self):

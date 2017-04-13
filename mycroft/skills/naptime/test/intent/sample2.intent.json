@@ -1,7 +1,5 @@
 {
   "utterance": "you should go to sleep",
-  "intent_type": "NapTimeIntent",
-  "intent": {
-    "SleepCommand": "go to sleep"
-  }
+  "intent_type": "sleep.intent",
+  "intent": { }
 }

@@ -36,7 +36,7 @@ IFL_TEMPLATE = "http://www.google.com/search?&sourceid=navclient&btnI=I&q=%s"
 class DesktopLauncherSkill(MycroftSkill):
     def __init__(self):
         MycroftSkill.__init__(self, "DesktopLauncherSkill")
-        self.appmap = {}
+        self.apps = {}
 
     def initialize(self):
         try:
@@ -51,52 +51,42 @@ class DesktopLauncherSkill(MycroftSkill):
 
         tokenizer = EnglishTokenizer()
 
+        app_names = []
+
         for app in gio.app_info_get_all():
             name = app.get_name().lower()
-            entry = [app]
+
+            self.apps[name] = app
+            app_names.append(name)
+
             tokenized_name = tokenizer.tokenize(name)[0]
-
-            if name in self.appmap:
-                self.appmap[name] += entry
-            else:
-                self.appmap[name] = entry
-
-            self.register_vocabulary(name, "Application")
             if name != tokenized_name:
-                self.register_vocabulary(tokenized_name, "Application")
-                if tokenized_name in self.appmap:
-                    self.appmap[tokenized_name] += entry
-                else:
-                    self.appmap[tokenized_name] = entry
+                app_names.append(tokenized_name)
 
-        launch_intent = IntentBuilder(
-            "LaunchDesktopApplicationIntent").require("LaunchKeyword").require(
-            "Application").build()
-        self.register_intent(launch_intent, self.handle_launch_desktop_app)
+        # TODO: self.add_capture(app_names)
 
-        launch_website_intent = IntentBuilder(
-            "LaunchWebsiteIntent").require("LaunchKeyword").require(
-            "Website").build()
-        self.register_intent(launch_website_intent, self.handle_launch_website)
+        import os.path
+        with open(os.path.join('intents','application.capture'), 'w') as file:
+            for name in app_names:
+                file.write(name + '\n')
 
-        search_website = IntentBuilder("SearchWebsiteIntent").require(
-            "SearchKeyword").require("Website").require(
-            "SearchTerms").build()
-        self.register_intent(search_website, self.handle_search_website)
+        self.register_intent('launcher.launch.intent', self.handle_launch_desktop_app)
+        self.register_intent('launcher.website.intent', self.handle_launch_website)
+        self.register_intent('launcher.search.intent', self.handle_search_website)
 
     def handle_launch_desktop_app(self, message):
-        app_name = message.data.get('Application')
-        apps = self.appmap.get(app_name)
+        app_name = message.data.get('application')
+        apps = self.apps.get(app_name)
         if apps and len(apps) > 0:
             apps[0].launch()
 
     def handle_launch_website(self, message):
-        site = message.data.get("Website")
+        site = message.data.get('website')
         webbrowser.open(IFL_TEMPLATE % (urllib2.quote(site)))
 
     def handle_search_website(self, message):
-        site = message.data.get("Website")
-        search_terms = message.data.get("SearchTerms")
+        site = message.data.get('website')
+        search_terms = message.data.get('query')
         search_str = site + " " + search_terms
         webbrowser.open(IFL_TEMPLATE % (urllib2.quote(search_str)))
 

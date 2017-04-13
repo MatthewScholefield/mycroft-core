@@ -43,9 +43,7 @@ class TimeSkill(MycroftSkill):
             self.format = "%I:%M, %p"
 
     def initialize(self):
-        intent = IntentBuilder("TimeIntent").require("QueryKeyword") \
-            .require("TimeKeyword").optionally("Location").build()
-        self.register_intent(intent, self.handle_intent)
+        self.register_intent('time.ask.intent', self.handle_intent)
 
     def get_timezone(self, locale):
         try:
@@ -59,7 +57,7 @@ class TimeSkill(MycroftSkill):
                 return None
 
     def handle_intent(self, message):
-        location = message.data.get("Location")  # optional parameter
+        location = message.data.get("location")  # optional parameter
         nowUTC = datetime.datetime.now(timezone('UTC'))
 
         tz = self.get_timezone(self.location_timezone)

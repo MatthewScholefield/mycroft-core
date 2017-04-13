@@ -42,22 +42,13 @@ class MediaSkill(MycroftSkill):
            Register common intents, these include basically all intents
            except the intents to start playback.
         """
-        intent = IntentBuilder('NextIntent').require('NextKeyword')
-        self.register_intent(intent, self.handle_next)
-
-        intent = IntentBuilder('PrevIntent').require('PrevKeyword')
-        self.register_intent(intent, self.handle_prev)
-
-        intent = IntentBuilder('PauseIntent').require('PauseKeyword')
-        self.register_intent(intent, self.handle_pause)
-
-        intent = IntentBuilder('PlayIntent') \
-            .one_of('PlayKeyword', 'ResumeKeyword')
-        self.register_intent(intent, self.handle_play)
-
-        intent = IntentBuilder('CurrentlyPlayingIntent') \
-            .require('CurrentlyPlayingKeyword')
-        self.register_intent(intent, self.handle_currently_playing)
+        self.register_intent('media.next.intent', self.handle_next)
+        self.register_intent('media.prev.intent', self.handle_prev)
+        self.register_intent('media.pause.intent', self.handle_pause)
+        self.register_intent('media.play.intent', self.handle_play)
+        self.register_intent('media.resume.intent', self.handle_play)
+        self.register_intent('media.ask.playing.intent',
+                             self.handle_currently_playing)
 
     def _register_event_handlers(self):
         """

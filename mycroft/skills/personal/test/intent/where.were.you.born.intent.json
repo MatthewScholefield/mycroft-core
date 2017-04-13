@@ -1,7 +1,5 @@
 {
   "utterance": "where were you born",
-  "intent_type": "WhereWereYouBornIntent",
-  "intent": {
-    "WhereWereYouBornKeyword": "where were you born"
-  }
+  "intent_type": "personal.born.where.intent",
+  "intent": { }
 }

@@ -1,9 +1,5 @@
 {
   "utterance": "stop playing record",
-  "intent_type": "AudioRecordSkillStopPlayIntent",
-  "intent": {
-    "AudioRecordSkillStopVerb": "stop",
-    "AudioRecordSkillPlayVerb": "playing",
-    "AudioRecordSkillKeyword": "record"
-  }
+  "intent_type": "audio.record.playback.stop.intent",
+  "intent": { }
 }

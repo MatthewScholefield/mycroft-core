@@ -1,9 +1,7 @@
 {
   "utterance": "remove the next reminder",
-  "intent_type": "ReminderSkillDeleteIntent",
+  "intent_type": "reminder.delete.intent",
   "intent": {
-    "ReminderSkillDeleteVerb": "remove",
-    "ReminderSkillAmount": "the next",
-    "ReminderSkillKeyword": "reminder"
+    "amount": "the next"
   }
 }

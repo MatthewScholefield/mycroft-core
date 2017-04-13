@@ -34,8 +34,7 @@ class StopSkill(MycroftSkill):
 
     def initialize(self):
         # TODO - To be generalized in MycroftSkill
-        intent = IntentBuilder("StopIntent").require("StopKeyword").build()
-        self.register_intent(intent, self.handle_intent)
+        self.register_intent('stop.intent', self.handle_intent)
 
     def handle_intent(self, event):
         self.emitter.emit(Message("mycroft.stop"))

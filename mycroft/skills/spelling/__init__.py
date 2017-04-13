@@ -35,12 +35,10 @@ class SpellingSkill(MycroftSkill):
         super(SpellingSkill, self).__init__(name="SpellingSkill")
 
     def initialize(self):
-        intent = IntentBuilder("SpellingIntent").require(
-            "SpellingKeyword").require("Word").build()
-        self.register_intent(intent, self.handle_intent)
+        self.register_intent('spelling.intent', self.handle_intent)
 
     def handle_intent(self, message):
-        word = message.data.get("Word")
+        word = message.data.get("word")
         self.emitter.once("recognizer_loop:audio_output_start",
                           self.enclosure.mouth_text(word))
         spelled_word = ', '.join(word).lower()
