@@ -1,0 +1,75 @@
+[submodule "skill-alarm"]
+	path = skill-alarm
+	url = https://github.com/MycroftAI/skill-alarm.git
+[submodule "skill-audio-record"]
+	path = skill-audio-record
+	url = https://github.com/MycroftAI/skill-audio-record.git
+[submodule "skill-configuration"]
+	path = skill-configuration
+	url = https://github.com/MycroftAI/skill-configuration.git
+[submodule "skill-date-time"]
+	path = skill-date-time
+	url = https://github.com/MycroftAI/skill-date-time.git
+[submodule "skill-desktop-launcher"]
+	path = skill-desktop-launcher
+	url = https://github.com/MycroftAI/skill-desktop-launcher.git
+[submodule "skill-hello-world"]
+	path = skill-hello-world
+	url = https://github.com/MycroftAI/skill-hello-world.git
+[submodule "skill-installer"]
+	path = skill-installer
+	url = https://github.com/MycroftAI/skill-installer.git
+[submodule "skill-ip"]
+	path = skill-ip
+	url = https://github.com/MycroftAI/skill-ip.git
+[submodule "skill-joke"]
+	path = skill-joke
+	url = https://github.com/MycroftAI/skill-joke.git
+[submodule "skill-mark1-demo"]
+	path = skill-mark1-demo
+	url = https://github.com/MycroftAI/skill-mark1-demo.git
+[submodule "skill-media"]
+	path = skill-media
+	url = https://github.com/MycroftAI/skill-media.git
+[submodule "skill-naptime"]
+	path = skill-naptime
+	url = https://github.com/MycroftAI/skill-naptime.git
+[submodule "skill-npr-news"]
+	path = skill-npr-news
+	url = https://github.com/MycroftAI/skill-npr-news.git
+[submodule "skill-pairing"]
+	path = skill-pairing
+	url = https://github.com/MycroftAI/skill-pairing.git
+[submodule "skill-personal"]
+	path = skill-personal
+	url = https://github.com/MycroftAI/skill-personal.git
+[submodule "skill-reminder"]
+	path = skill-reminder
+	url = https://github.com/MycroftAI/skill-reminder.git
+[submodule "skill-singing"]
+	path = skill-singing
+	url = https://github.com/MycroftAI/skill-singing.git
+[submodule "skill-speak"]
+	path = skill-speak
+	url = https://github.com/MycroftAI/skill-speak.git
+[submodule "skill-spelling"]
+	path = skill-spelling
+	url = https://github.com/MycroftAI/skill-spelling.git
+[submodule "skill-stock"]
+	path = skill-stock
+	url = https://github.com/MycroftAI/skill-stock.git
+[submodule "skill-stop"]
+	path = skill-stop
+	url = https://github.com/MycroftAI/skill-stop.git
+[submodule "skill-volume"]
+	path = skill-volume
+	url = https://github.com/MycroftAI/skill-volume.git
+[submodule "skill-weather"]
+	path = skill-weather
+	url = https://github.com/MycroftAI/skill-weather.git
+[submodule "skill-wiki"]
+	path = skill-wiki
+	url = https://github.com/MycroftAI/skill-wiki.git
+[submodule "skill-wolfram-alpha"]
+	path = skill-wolfram-alpha
+	url = https://github.com/MycroftAI/skill-wolfram-alpha.git
