@@ -250,6 +250,7 @@ def wait_while_speaking():
     briefly to ensure that any preceeding request to speak has time to
     begin.
     """
+    print('hi')
     logger.info("mycroft.utils.wait_while_speaking() is depreciated, use "
                 "mycroft.audio.wait_while_speaking() instead.")
     return mycroft.audio.wait_while_speaking()
