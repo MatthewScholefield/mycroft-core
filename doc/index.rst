@@ -1,12 +1,4 @@
 .. Mycroft documentation master file
 
-Mycroft Skills API
-==================
+The documentation has moved to http://mycroft-core.rtfd.io/.
 
-*Reference for the Mycroft Skills API*
-
-.. toctree::
-   :maxdepth: 4
-   :caption: Contents:
-   
-   source/mycroft
