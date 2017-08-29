@@ -250,14 +250,13 @@ def wait_while_speaking():
     briefly to ensure that any preceeding request to speak has time to
     begin.
     """
-    logger.info("mycroft.utils.wait_while_speaking() is depreciated, use "
-                "mycroft.audio.wait_while_speaking() instead.")
+    logger.info("mycroft.utils.wait_while_speaking() is depreciated, use mycroft.audio.wait_while_speaking() instead.")
     return mycroft.audio.wait_while_speaking()
 
 
 def stop_speaking():
     # TODO: Less hacky approach to this once Audio Manager is implemented
     # Skills should only be able to stop speech they've initiated
-    logger.info("mycroft.utils.stop_speaking() is depreciated, use "
-                "mycroft.audio.stop_speaking() instead.")
+    logger.info("mycroft.utils.stop_speaking() is depreciated, use mycroft.audio.stop_speaking() instead.")
     mycroft.audio.stop_speaking()
+
